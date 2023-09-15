@@ -20,5 +20,9 @@ TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a55
 
+# Bootloader
+TARGET_BOOTLOADER_BOARD_NAME := cypfq
+TARGET_NO_BOOTLOADER := true
+
 # Inherit the proprietary files
 include vendor/motorola/cypfq/BoardConfigVendor.mk
