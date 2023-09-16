@@ -26,6 +26,11 @@ AB_OTA_POSTINSTALL_CONFIG ?= \
     FILESYSTEM_TYPE_system=ext4 \
     POSTINSTALL_OPTIONAL_system=true
 
+# ANT+
+PRODUCT_PACKAGES += \
+    AntHalService-Soong \
+    com.dsi.ant@1.0.vendor
+
 # Audio
 PRODUCT_PACKAGES += \
     android.hardware.audio@4.0.vendor \
