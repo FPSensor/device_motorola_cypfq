@@ -204,6 +204,11 @@ PRODUCT_PACKAGES += \
     libavservices_minijail_vendor \
     libcodec2_hidl@1.0.vendor
 
+# Moto hardware
+PRODUCT_PACKAGES += \
+    MotoActions \
+    MotoCommonOverlay
+
 # Net
 PRODUCT_PACKAGES += \
     android.system.net.netd@1.1.vendor
