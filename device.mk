@@ -159,6 +159,11 @@ PRODUCT_PACKAGES += \
     android.hardware.fastboot@1.1-impl-custom \
     fastboot
 
+# Fingerprint
+PRODUCT_PACKAGES += \
+    android.hardware.biometrics.fingerprint@2.1-service \
+    vendor.oneplus.fingerprint.extension@1.0.vendor
+
 # Gatekeeper
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0.vendor
