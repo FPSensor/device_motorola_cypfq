@@ -66,11 +66,19 @@ TARGET_ENABLE_MEDIADRM_64 := true
 # Filesystem
 BOARD_ROOT_EXTRA_SYMLINKS += /mnt/vendor/persist:/persist
 BOARD_USES_METADATA_PARTITION := true
-TARGET_FS_CONFIG_GEN += $(COMMON_PATH)/mot_aids.fs
+TARGET_FS_CONFIG_GEN += $(DEVICE_PATH)/mot_aids.fs
 
 # GPS
 BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := default
 LOC_HIDL_VERSION := 4.0
+
+# HIDL
+DEVICE_FRAMEWORK_MANIFEST_FILE += $(DEVICE_PATH)/framework_manifest.xml
+DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := \
+    $(DEVICE_PATH)/device_framework_matrix.xml \
+    vendor/lineage/config/device_framework_matrix.xml
+DEVICE_MATRIX_FILE := $(DEVICE_PATH)/compatibility_matrix.xml
+DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/manifest.xml
 
 # Kernel
 BOARD_BOOT_HEADER_VERSION ?= 3
