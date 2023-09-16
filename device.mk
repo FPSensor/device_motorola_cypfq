@@ -105,6 +105,11 @@ PRODUCT_PACKAGES += \
 # Dynamic Partitions
 TARGET_USES_DYNAMIC_PARTITIONS := true
 
+# fastbootd
+PRODUCT_PACKAGES += \
+    android.hardware.fastboot@1.1-impl-custom \
+    fastboot
+
 # WiFi
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service \
