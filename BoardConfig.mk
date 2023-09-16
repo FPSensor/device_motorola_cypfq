@@ -4,6 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
+BOARD_VENDOR := motorola
+
 DEVICE_PATH := device/motorola/cypfq
 
 # Architecture
@@ -40,6 +42,10 @@ BOARD_SUPPORTS_OPENSOURCE_STHAL := true
 BOARD_SUPPORTS_SOUND_TRIGGER := true
 BOARD_USES_ALSA_AUDIO := true
 USE_CUSTOM_AUDIO_POLICY := 1
+
+# Bluetooth
+BOARD_HAVE_BLUETOOTH_QCOM := true
+TARGET_FWK_SUPPORTS_FULL_VALUEADDS := true
 
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := cypfq
@@ -117,7 +123,17 @@ BOARD_INCLUDE_RECOVERY_DTBO := true
 TARGET_NO_RECOVERY := false
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 
-# AVB
+# RIL
+ENABLE_VENDOR_RIL_SERVICE := true
+
+# SELinux
+include device/qcom/sepolicy_vndr-legacy-um/SEPolicy.mk
+BUILD_BROKEN_VENDOR_PROPERTY_NAMESPACE := true
+BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
+PRODUCT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
+PRODUCT_PUBLIC_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/public
+
+# Verified Boot
 BOARD_AVB_ENABLE := true
 BOARD_AVB_VBMETA_SYSTEM := system
 BOARD_AVB_VBMETA_SYSTEM_KEY_PATH ?= external/avb/test/data/testkey_rsa2048.pem
