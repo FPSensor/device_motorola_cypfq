@@ -229,6 +229,14 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/com.android.nfc_extras.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.android.nfc_extras.xml \
     frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml
 
+# NFC
+PRODUCT_PACKAGES += \
+    android.hardware.nfc@1.2-service.st:64 \
+    android.hardware.secure_element@1.2.vendor \
+    com.android.nfc_extras \
+    NfcNci \
+    Tag
+
 # WiFi
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service \
