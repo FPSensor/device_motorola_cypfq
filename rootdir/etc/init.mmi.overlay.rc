@@ -1,0 +1,55 @@
+on post-fs
+   chown system system /sys/devices/platform/soc/4804000.ufshc/clkgate_enable
+   chown system system /sys/devices/platform/soc/4804000.ufshc/devfreq/4804000.ufshc/min_freq
+
+import /vendor/etc/init/hw/init.vendor.st21nfc.rc
+
+#fps dual sensor
+service chipone_ident /vendor/bin/hw/chipone_ident
+    class late_start
+    user system
+    group system
+    oneshot
+    disabled
+
+service vendor.ident-fps-overlay-sh /vendor/bin/init.oem.fingerprint.overlay.sh
+    class core
+    user root
+    group drmrpc system
+    oneshot
+    disabled
+
+on post-fs-data
+    exec_start vendor.ident-fps-overlay-sh
+    chown system system /dev/fpsensor
+    chmod 0660 /dev/fpsensor
+    # fm conttrol intf
+    chown system system /sys/devices/platform/soc/soc:fm_wcn39x0/elna_en
+
+on init
+    insmod /vendor/lib/modules/${ro.vendor.mot.gki.path}/ili9882_mmi.ko
+
+on boot
+   # vibrator hal need to access this sysfs node for AF noise issue
+   chown system system /sys/devices/platform/soc/soc:mot,cam-actuator/onekey_actuator
+   chmod 0660 /sys/devices/platform/soc/soc:mot,cam-actuator/onekey_actuator
+
+on boot && property:ro.vendor.mot.gki.path=5.4-gki
+    insmod /vendor/lib/modules/${ro.vendor.mot.gki.path}/nfc_i2c.ko
+
+on late-init
+    insmod /vendor/lib/modules/${ro.vendor.mot.gki.path}/mmi-smbcharger-iio.ko
+    insmod /vendor/lib/modules/${ro.vendor.mot.gki.path}/qpnp_adaptive_charge.ko
+
+on charger
+    insmod /vendor/lib/modules/${ro.vendor.mot.gki.path}/mmi-smbcharger-iio.ko
+    insmod /vendor/lib/modules/${ro.vendor.mot.gki.path}/qpnp_adaptive_charge.ko
+
+service capsense_reset /system/vendor/bin/capsense_reset
+   class core
+   user system
+   group system input
+   disabled
+
+on property:sys.boot_completed=1
+    start capsense_reset
