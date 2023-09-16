@@ -43,6 +43,7 @@ TARGET_BOOTLOADER_BOARD_NAME := cypfq
 TARGET_NO_BOOTLOADER := true
 
 # Filesystem
+BOARD_ROOT_EXTRA_SYMLINKS += /mnt/vendor/persist:/persist
 BOARD_USES_METADATA_PARTITION := true
 TARGET_FS_CONFIG_GEN += $(COMMON_PATH)/mot_aids.fs
 
