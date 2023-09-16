@@ -227,6 +227,8 @@ PRODUCT_PACKAGES += \
 
 # OMX
 PRODUCT_PACKAGES += \
+    libcodec2_hidl@1.0.vendor \
+    libcodec2_vndk.vendor \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
