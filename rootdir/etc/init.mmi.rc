@@ -1,0 +1,137 @@
+# Charge only mode configuration
+import /vendor/etc/init/hw/init.mmi.charge_only.rc
+
+# USB configuration
+import /vendor/etc/init/hw/init.usb.rc
+
+on early-init
+    # initialize ro.vendor.mot.factory with default value when it is not set
+    setprop ro.vendor.mot.factory false
+
+    start vendor.oem-hw-sh
+    # Map oem properties.
+    setprop ro.carrier ${ro.boot.carrier}
+    setprop ro.sf.lcd_density ${ro.boot.lcd_density}
+    setprop ro.vendor.fsg-id ${ro.boot.fsg-id}
+    setprop ro.vendor.hw.device ${ro.boot.device}
+    setprop ro.product.vendor.device ${ro.vendor.product.device}
+    setprop ro.product.vendor.name ${ro.vendor.product.name}
+    setprop ro.product.vendor.model ${ro.vendor.product.model}
+    setprop ro.vendor.boot.cid ${ro.boot.cid}
+    setprop ro.vendor.boot.powerup_reason ${ro.boot.powerup_reason}
+    setprop ro.vendor.boot.bl_state ${ro.boot.bl_state}
+    setprop ro.vendor.boot.serialno ${ro.boot.serialno}
+    setprop ro.vendor.zygote ${ro.zygote}
+
+    # Make sure ro.boot.product.hardware.sku is set before hwservicemanager startup.
+    setprop ro.boot.product.hardware.sku ${ro.vendor.product.hardware.sku.variant}
+
+    # Trigger priority stage of MMI init
+    trigger mmi-priority
+
+    # Ensure charging module load order
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules qpnp-smbcharger-mmi qpnp_adaptive_charge mmi-smbcharger-iio
+
+on post-fs
+    # Set RFS permissions
+    chmod 0711 /mnt/vendor/persist/rfs/msm
+    chmod 0711 /mnt/vendor/persist/rfs/msm/mpss
+    chmod 0771 /mnt/vendor/persist/rfs/msm/mpss/mot_rfs
+    chmod 0711 /mnt/vendor/persist/rfs/mdm
+    chmod 0711 /mnt/vendor/persist/rfs/mdm/mpss
+    chmod 0771 /mnt/vendor/persist/rfs/mdm/mpss/mot_rfs
+
+on post-fs-data
+    # Create directory for cutback
+    mkdir /data/vendor/misc/cutback 0770 radio wifi
+
+    # Imager tuning data for camera subsystem
+    mkdir /data/vendor/misc/imager 0771 camera camera
+
+    # NFC vendor data
+    mkdir /data/vendor/nfc 0770 nfc nfc
+
+    # Required by FingerPrint Cards (FPC) via init so we don't need to give qseecomd or fingerprintd permissions to create them
+    mkdir /data/vendor/fpc 0700 system system
+    mkdir /data/vendor/.fps 0770 system oem_5015
+
+    # Start fingerprint script
+    start vendor.hal-fps-sh
+
+on boot
+    # Change ownership and permission for vibrator
+    chown system system /sys/class/leds/vibrator/state
+    chmod 0660 /sys/class/leds/vibrator/state
+    chown system system /sys/class/leds/vibrator/activate
+    chmod 0660 /sys/class/leds/vibrator/activate
+    chown system system /sys/class/leds/vibrator/duration
+    chmod 0660 /sys/class/leds/vibrator/duration
+    chown system system /sys/class/leds/vibrator/seq
+    chmod 0660 /sys/class/leds/vibrator/seq
+    chown system system /sys/class/leds/vibrator/extra
+    chmod 0660 /sys/class/leds/vibrator/extra
+    chown root oem_5020 /sys/bus/i2c/devices/2-005a/reduce
+
+    # Quiet binder logs
+    write /sys/module/binder/parameters/debug_mask 0x5
+
+    # Change owner ship of l5 laser calibration
+    chown camera oem_5004 /mnt/vendor/persist/camera/focus/offset_cal
+    chmod 0660 /mnt/vendor/persist/camera/focus/offset_cal
+
+# translate MMI property in order to keep the consistent with QCOM
+on property:ro.vendor.hw.dualsim=true
+    setprop persist.radio.multisim.config dsds
+    setprop persist.vendor.radio.multisim.config dsds
+
+on property:ro.vendor.hw.dualsim=false
+    setprop persist.radio.multisim.config ""
+    setprop persist.vendor.radio.multisim.config ""
+
+# Fallback dualsim property
+on property:ro.boot.dualsim=true
+    setprop persist.radio.multisim.config dsds
+    setprop persist.vendor.radio.multisim.config dsds
+
+on property:ro.boot.dualsim=false
+    setprop persist.radio.multisim.config ""
+    setprop persist.vendor.radio.multisim.config ""
+
+# Override the AOSP sensor HAL service definition
+# from hardware/interfaces/sensors/2.0/multihal
+# to add input and uhid group access
+service vendor.sensors-hal-2-0-multihal /vendor/bin/hw/android.hardware.sensors@2.0-service.multihal
+    override
+    class hal
+    user system
+    group system wakelock context_hub input uhid
+    task_profiles ServiceCapacityLow
+    capabilities BLOCK_SUSPEND
+    rlimit rtprio 10 10
+
+# Override the cnss-daemon service definition
+# to use our own modified binary
+service cnss-daemon /vendor/bin/cnss-daemon_moto -n -l
+    override
+    class late_start
+    user system
+    group system inet net_admin wifi
+    capabilities NET_ADMIN
+
+service vendor.mmi-touch-sh /vendor/bin/init.mmi.touch.sh
+    class core
+    user root
+    oneshot
+
+service vendor.hal-fps-sh /vendor/bin/init.oem.fingerprint2.sh
+    class late_start
+    user root
+    group system
+    oneshot
+    disabled
+
+service vendor.oem-hw-sh /vendor/bin/init.oem.hw.sh
+    class core
+    user root
+    oneshot
+    disabled
