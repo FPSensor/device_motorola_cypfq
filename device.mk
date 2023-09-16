@@ -29,5 +29,19 @@ AB_OTA_POSTINSTALL_CONFIG ?= \
 # Dynamic Partitions
 TARGET_USES_DYNAMIC_PARTITIONS := true
 
+# WiFi
+PRODUCT_PACKAGES += \
+    android.hardware.wifi@1.0-service \
+    hostapd \
+    libwpa_client \
+    libwifi-hal-ctrl \
+    libwifi-hal-qcom \
+    wifi-mac-generator \
+    wpa_supplicant \
+    wpa_supplicant.conf
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/WCNSS_qcom_cfg.ini
+
 # Inherit the proprietary files
 $(call inherit-product, vendor/motorola/cypfq/cypfq-vendor.mk)
