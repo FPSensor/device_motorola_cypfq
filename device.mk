@@ -169,7 +169,7 @@ TARGET_USES_DYNAMIC_PARTITIONS := true
 
 # fastbootd
 PRODUCT_PACKAGES += \
-    fastboot
+    fastbootd
 
 # Filesystem
 PRODUCT_PACKAGES += \
