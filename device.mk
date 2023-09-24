@@ -4,20 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-# A/B support
-AB_OTA_UPDATER := true
+# A/B
 PRODUCT_SHIPPING_API_LEVEL := 30
-
-AB_OTA_PARTITIONS += \
-    boot \
-    dtbo \
-    product \
-    system \
-    system_ext \
-    vendor \
-    vendor_boot \
-    vbmeta \
-    vbmeta_system
 
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \

@@ -8,6 +8,20 @@ BOARD_VENDOR := motorola
 
 DEVICE_PATH := device/motorola/cypfq
 
+# A/B
+AB_OTA_UPDATER := true
+
+AB_OTA_PARTITIONS += \
+    boot \
+    dtbo \
+    product \
+    system \
+    system_ext \
+    vendor \
+    vendor_boot \
+    vbmeta \
+    vbmeta_system
+
 # Architecture
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-2a-dotprod
