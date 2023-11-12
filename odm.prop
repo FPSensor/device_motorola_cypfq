@@ -1,2 +1,9 @@
+# Audio (newer CAF HALs)
+persist.vendor.audio.fluence.speaker=false
+persist.vendor.audio.fluence.voicecall=true
+persist.vendor.audio.fluence.voicecomm=true
+persist.vendor.audio.fluence.voicerec=false
+ro.vendor.audio.sdk.fluencetype=fluence
+
 # QVA
 ro.vendor.qti.va_odm.support=1
